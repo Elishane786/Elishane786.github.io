@@ -144,6 +144,9 @@
   .highlight h3{font-size:1.05rem;font-weight:600}
   .highlight p{margin:3px 0 0;color:var(--muted);font-size:.9rem}
 
+  .quote{margin:0;font-family:var(--font-sans);font-weight:600;font-size:clamp(1.35rem,3.4vw,2rem);line-height:1.4;letter-spacing:-.01em;color:var(--fg);max-width:24ch;padding-left:22px;border-left:3px solid var(--accent)}
+  .quote span{color:var(--accent)}
+
   .skillset{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
   @media (max-width:640px){.skillset{grid-template-columns:1fr}}
   .skillgroup h3{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:500}
@@ -221,7 +224,7 @@
   <section id="about" aria-label="About">
     <div class="inner reveal">
       <p class="eyebrow">// about</p>
-      <p class="lead">I am a cyber security MSc graduate who likes taking things apart to see where they break, from IoT cameras and industrial controllers to Windows internals. My focus is offensive security, and alongside the research I build real tools and ship them. Outside the lab I fix and build bikes, which is the same instinct, just with fewer segfaults.</p>
+      <p class="lead">I am a cyber security MSc graduate who likes taking things apart to see where they break, from IoT cameras and industrial controllers to Windows internals. My focus is offensive security, and alongside the research I build real tools of my own.</p>
     </div>
   </section>
 
@@ -358,6 +361,12 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="motto" aria-label="Quote">
+    <div class="inner reveal">
+      <blockquote class="quote">Success is not spontaneous combustion. You must burn yourself to light the <span>fire</span>.</blockquote>
     </div>
   </section>
 
