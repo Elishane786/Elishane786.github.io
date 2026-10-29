@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
-  /* Layout: single centered column, terminal-framed hero, card grids for work. Committed dark "amber phosphor terminal" world. */
+  /* Layout: full-width bands with one centered 960 column; dark "amber-free green terminal" world with a subtle living background. */
   :root{
     --bg:#0c0e13;
     --surface:#141821;
@@ -32,13 +32,30 @@
     font-family:var(--font-sans);
     line-height:1.6;
     margin:0;
+    position:relative;
     padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));
     -webkit-font-smoothing:antialiased;
   }
-  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--bg)}
-  .wrap{max-width:var(--maxw);margin-inline:auto}
-  .page{width:100%}
-  .page>section>*,.page>footer{max-width:var(--maxw);margin-inline:auto}
+  img{max-width:100%}
+
+  /* living background */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg::before{content:"";position:absolute;inset:-25%;
+    background:
+      radial-gradient(520px circle at 22% 18%, rgba(69,209,127,.12), transparent 60%),
+      radial-gradient(560px circle at 82% 72%, rgba(69,209,127,.07), transparent 62%);
+    animation:drift 22s ease-in-out infinite alternate}
+  .bg::after{content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(233,231,225,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233,231,225,.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask:radial-gradient(circle at 50% 24%, #000, transparent 78%);
+    mask:radial-gradient(circle at 50% 24%, #000, transparent 78%)}
+  @keyframes drift{to{transform:translate3d(4%,3%,0) scale(1.12)}}
+
+  header,main{position:relative;z-index:1}
+  .inner{max-width:var(--maxw);margin-inline:auto}
   a{color:var(--accent);text-decoration:none}
   a:hover{text-decoration:underline}
   :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
@@ -67,10 +84,7 @@
 
   /* hero */
   .hero{padding-top:52px}
-  .term{
-    background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;
-    box-shadow:0 24px 60px -30px rgba(0,0,0,.8)
-  }
+  .term{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 24px 60px -30px rgba(0,0,0,.8)}
   .term-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface-2)}
   .dot{width:11px;height:11px;border-radius:50%;background:#3a4252}
   .term-title{font-family:var(--font-mono);font-size:.76rem;color:var(--muted);margin-left:8px}
@@ -83,7 +97,6 @@
   .name-out{font-size:clamp(1.7rem,6vw,2.8rem);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:8px 0 22px;color:var(--fg);font-family:var(--font-sans)}
   .cursor{display:inline-block;width:9px;height:1.05em;background:var(--accent);vertical-align:-2px;margin-left:3px;animation:blink 1.1s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
-
   .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
   .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.85rem;padding:11px 18px;border-radius:8px;border:1px solid var(--border);color:var(--fg);background:var(--surface);transition:border-color .15s,transform .15s}
   .btn:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-1px)}
@@ -92,10 +105,10 @@
 
   .lead{color:var(--muted);max-width:60ch;font-size:1.02rem}
 
-  /* projects */
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
   @media (max-width:640px){.grid{grid-template-columns:1fr}}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0;transition:border-color .18s,transform .18s}
+  .card:hover{border-color:var(--accent);transform:translateY(-3px)}
   .card h3{font-size:1.1rem;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .flag{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
   .card p{margin:0;color:var(--muted);font-size:.92rem}
@@ -104,7 +117,6 @@
   .card-link{font-family:var(--font-mono);font-size:.8rem;margin-top:4px}
   .card-link.none{color:var(--muted)}
 
-  /* experience + education rows */
   .rows{display:flex;flex-direction:column;gap:2px}
   .row{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--border)}
   .row:last-child{border-bottom:none}
@@ -114,36 +126,46 @@
   .row p{margin:0;color:var(--muted);font-size:.92rem}
   @media (max-width:540px){.row{grid-template-columns:1fr;gap:6px}}
 
-  /* highlight */
   .highlight{display:flex;align-items:center;gap:18px;background:linear-gradient(180deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:12px;padding:22px 24px;flex-wrap:wrap}
   .highlight .big{font-family:var(--font-mono);font-size:1.5rem;font-weight:600;color:var(--accent)}
   .highlight div{min-width:0}
   .highlight h3{font-size:1.05rem;font-weight:600}
   .highlight p{margin:3px 0 0;color:var(--muted);font-size:.9rem}
 
-  /* skills */
   .skillset{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
   @media (max-width:640px){.skillset{grid-template-columns:1fr}}
   .skillgroup h3{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:500}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-size:.84rem}
 
-  /* contact */
   .contact-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
   .email-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:.95rem}
   .email-val{color:var(--fg);user-select:all;word-break:break-all}
   .copy{font-family:var(--font-mono);font-size:.74rem;padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);color:var(--muted);cursor:pointer}
   .copy:hover{border-color:var(--accent);color:var(--fg)}
 
-  footer{padding-block:34px;border-top:1px solid var(--border);color:var(--muted);font-family:var(--font-mono);font-size:.76rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer{padding-block:34px;border-top:1px solid var(--border)}
+  .foot-inner{max-width:var(--maxw);margin-inline:auto;color:var(--muted);font-family:var(--font-mono);font-size:.76rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-  .reveal{opacity:0;transform:translateY(12px);animation:rise .6s ease forwards}
-  @keyframes rise{to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1;transform:none}.cursor{animation:none}}
+  /* hero load-in */
+  .fade-in{animation:rise .6s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* scroll reveal: only armed once body.anim is set by JS, so no-JS shows everything */
+  .reveal{transition:opacity .6s ease, transform .6s ease}
+  body.anim .reveal:not(.in){opacity:0;transform:translateY(22px)}
+  @media (prefers-reduced-motion:reduce){
+    .fade-in{animation:none}
+    .cursor{animation:none}
+    .bg::before{animation:none}
+    body.anim .reveal:not(.in){opacity:1;transform:none}
+  }
 </style>
 </head>
 <body>
 
+
+<div class="bg" aria-hidden="true"></div>
 
 <header>
   <nav>
@@ -159,175 +181,193 @@
 
 <main class="page">
 
-  <section class="hero reveal" aria-label="Intro">
-    <div class="term">
-      <div class="term-bar">
-        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        <span class="term-title">visitor@portfolio: ~</span>
+  <section class="hero" aria-label="Intro">
+    <div class="inner fade-in">
+      <div class="term">
+        <div class="term-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="term-title">visitor@portfolio: ~</span>
+        </div>
+        <div class="term-body">
+          <div class="line"><span class="prompt">visitor@portfolio</span><span class="path">:~$</span> <span class="cmd">whoami</span></div>
+          <div class="name-out">Muhammed Ali Razvi</div>
+          <div class="line"><span class="prompt">visitor@portfolio</span><span class="path">:~$</span> <span class="cmd">cat role.txt</span></div>
+          <p class="out">MSc Cyber Security graduate, University of Birmingham. Working toward offensive security, penetration testing and red teaming.</p>
+          <div class="line"><span class="prompt">visitor@portfolio</span><span class="path">:~$</span> <span class="cmd">location</span></div>
+          <p class="out">Birmingham, UK &nbsp;·&nbsp; open to relocation<span class="cursor" aria-hidden="true"></span></p>
+        </div>
       </div>
-      <div class="term-body">
-        <div class="line"><span class="prompt">visitor@portfolio</span><span class="path">:~$</span> <span class="cmd">whoami</span></div>
-        <div class="name-out">Muhammed Ali Razvi</div>
-        <div class="line"><span class="prompt">visitor@portfolio</span><span class="path">:~$</span> <span class="cmd">cat role.txt</span></div>
-        <p class="out">MSc Cyber Security graduate, University of Birmingham. Working toward offensive security, penetration testing and red teaming.</p>
-        <div class="line"><span class="prompt">visitor@portfolio</span><span class="path">:~$</span> <span class="cmd">location</span></div>
-        <p class="out">Birmingham, UK &nbsp;·&nbsp; open to relocation<span class="cursor" aria-hidden="true"></span></p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/Elishane786" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="#contact">Get in touch</a>
+        <a class="btn" href="cv.pdf" target="_blank" rel="noopener">CV</a>
       </div>
-    </div>
-    <div class="cta">
-      <a class="btn primary" href="https://github.com/Elishane786" target="_blank" rel="noopener">GitHub</a>
-      <a class="btn" href="#contact">Get in touch</a>
-      <a class="btn" href="cv.pdf" target="_blank" rel="noopener">CV</a>
     </div>
   </section>
 
   <section id="about" aria-label="About">
-    <p class="eyebrow">// about</p>
-    <p class="lead">I am a cyber security MSc graduate who likes taking things apart to see where they break, from IoT cameras and industrial controllers to Windows internals. My focus is offensive security, and alongside the research I build real tools and ship them. Outside the lab I fix and build bikes, which is the same instinct, just with fewer segfaults.</p>
+    <div class="inner reveal">
+      <p class="eyebrow">// about</p>
+      <p class="lead">I am a cyber security MSc graduate who likes taking things apart to see where they break, from IoT cameras and industrial controllers to Windows internals. My focus is offensive security, and alongside the research I build real tools and ship them. Outside the lab I fix and build bikes, which is the same instinct, just with fewer segfaults.</p>
+    </div>
   </section>
 
   <section id="work" aria-label="Projects">
-    <p class="eyebrow">// selected work</p>
-    <div class="grid">
+    <div class="inner reveal">
+      <p class="eyebrow">// selected work</p>
+      <div class="grid">
 
-      <article class="card">
-        <h3>SecurePass Analyzer</h3>
-        <p>A password auditing tool that scores real strength with zxcvbn and checks a password against the Have I Been Pwned breach set using k-anonymity, so the password never leaves the machine. Also generates strong passwords and passphrases.</p>
-        <div class="tags"><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">HIBP API</span></div>
-        <a class="card-link" href="https://github.com/Elishane786/securepass-analyzer" target="_blank" rel="noopener">View on GitHub →</a>
-      </article>
+        <article class="card">
+          <h3>SecurePass Analyzer</h3>
+          <p>A password auditing tool that scores real strength with zxcvbn and checks a password against the Have I Been Pwned breach set using k-anonymity, so the password never leaves the machine. Also generates strong passwords and passphrases.</p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">HIBP API</span></div>
+          <a class="card-link" href="https://github.com/Elishane786/securepass-analyzer" target="_blank" rel="noopener">View on GitHub →</a>
+        </article>
 
-      <article class="card">
-        <h3>2D Dungeon Adventure</h3>
-        <p>A pixel-art dungeon platformer built in Unity with C#. My own gameplay systems: arrow firing and spawning, doors and keys, chests, traps, a dialogue and story flow, and hand-built levels from a start menu through to the end.</p>
-        <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Game dev</span></div>
-        <a class="card-link" href="https://github.com/Elishane786/2d-dungeon-adventure" target="_blank" rel="noopener">View on GitHub →</a>
-      </article>
+        <article class="card">
+          <h3>2D Dungeon Adventure</h3>
+          <p>A pixel-art dungeon platformer built in Unity with C#. My own gameplay systems: arrow firing and spawning, doors and keys, chests, traps, a dialogue and story flow, and hand-built levels from a start menu through to the end.</p>
+          <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Game dev</span></div>
+          <a class="card-link" href="https://github.com/Elishane786/2d-dungeon-adventure" target="_blank" rel="noopener">View on GitHub →</a>
+        </article>
 
-      <article class="card">
-        <h3>Testing Windows Code Integrity <span class="flag">MSc final project</span></h3>
-        <p>Research into Windows code integrity and whether a Microsoft signature proves a driver is safe. Using WinPmem to reach raw physical memory, I built a Counter-Strike 2 ESP wallhack from scratch, reading player positions straight out of physical memory instead of the usual virtual-memory route, to show how memory protections can be sidestepped. Defended in viva.</p>
-        <div class="tags"><span class="tag">Windows internals</span><span class="tag">Physical memory</span><span class="tag">WinPmem</span><span class="tag">C++</span></div>
-        <span class="card-link none">Academic report</span>
-      </article>
+        <article class="card">
+          <h3>Testing Windows Code Integrity <span class="flag">MSc final project</span></h3>
+          <p>Research into whether a Microsoft signature really proves a driver is safe. Using WinPmem to reach raw physical memory, I built a Counter-Strike 2 ESP wallhack from scratch, reading player positions straight out of physical memory instead of the usual virtual-memory route, to show how memory protections can be sidestepped. Defended in viva.</p>
+          <div class="tags"><span class="tag">Windows internals</span><span class="tag">Physical memory</span><span class="tag">WinPmem</span><span class="tag">C++</span></div>
+          <span class="card-link none">Academic report</span>
+        </article>
 
-      <article class="card">
-        <h3>EZVIZ C6N Camera Pentest <span class="flag">group project</span></h3>
-        <p>Security assessment of a consumer IoT camera for an MSc group project, looking at the device, its app, and its network traffic. I helped run the testing and wrote up the findings into a formal penetration test report.</p>
-        <div class="tags"><span class="tag">IoT security</span><span class="tag">Pentesting</span><span class="tag">Reporting</span></div>
-        <span class="card-link none">Assessment report</span>
-      </article>
+        <article class="card">
+          <h3>EZVIZ C6N Camera Pentest <span class="flag">group project</span></h3>
+          <p>Security assessment of a consumer IoT camera for an MSc group project, looking at the device, its app, and its network traffic. I helped run the testing and wrote up the findings into a formal penetration test report.</p>
+          <div class="tags"><span class="tag">IoT security</span><span class="tag">Pentesting</span><span class="tag">Reporting</span></div>
+          <span class="card-link none">Assessment report</span>
+        </article>
 
-      <article class="card">
-        <h3>ICS &amp; Digital-Twin Security <span class="flag">research</span></h3>
-        <p>My main research direction: security of industrial control systems. Manipulating PLCs over Snap7, modelling a plant with Factory I/O, and looking at how a digital twin can be attacked or used to defend the real process.</p>
-        <div class="tags"><span class="tag">ICS / OT</span><span class="tag">PLC / Snap7</span><span class="tag">Factory I/O</span></div>
-        <span class="card-link none">Research</span>
-      </article>
+        <article class="card">
+          <h3>ICS &amp; Digital-Twin Security <span class="flag">research</span></h3>
+          <p>My main research direction: security of industrial control systems. Manipulating PLCs over Snap7, modelling a plant with Factory I/O, and looking at how a digital twin can be attacked or used to defend the real process.</p>
+          <div class="tags"><span class="tag">ICS / OT</span><span class="tag">PLC / Snap7</span><span class="tag">Factory I/O</span></div>
+          <span class="card-link none">Research</span>
+        </article>
 
-      <article class="card">
-        <h3>CTF &amp; Exploitation</h3>
-        <p>Ongoing capture-the-flag work across binary exploitation, reverse engineering and cryptography challenges, including memory-dump and pwn problems. Where competition results came from this, they are listed below.</p>
-        <div class="tags"><span class="tag">Reverse engineering</span><span class="tag">pwn</span><span class="tag">Crypto</span></div>
-        <span class="card-link none">Practice</span>
-      </article>
+        <article class="card">
+          <h3>CTF &amp; Exploitation</h3>
+          <p>Ongoing capture-the-flag work across binary exploitation, reverse engineering and cryptography challenges, including memory-dump and pwn problems. Where competition results came from this, they are listed below.</p>
+          <div class="tags"><span class="tag">Reverse engineering</span><span class="tag">pwn</span><span class="tag">Crypto</span></div>
+          <span class="card-link none">Practice</span>
+        </article>
 
+      </div>
     </div>
   </section>
 
   <section id="experience" aria-label="Experience">
-    <p class="eyebrow">// experience</p>
-    <div class="rows">
-      <div class="row">
-        <div class="when">Sep 2025 – Sep 2026</div>
-        <div>
-          <h3>Associate Security Engineer</h3>
-          <div class="where">Hover Fest · remote, part-time</div>
-          <p>Part of a five-person security team. Application and API security, vulnerability management, and monitoring and incident support across Splunk and Microsoft Sentinel.</p>
+    <div class="inner reveal">
+      <p class="eyebrow">// experience</p>
+      <div class="rows">
+        <div class="row">
+          <div class="when">Sep 2025 – Sep 2026</div>
+          <div>
+            <h3>Associate Security Engineer</h3>
+            <div class="where">Hover Fest · remote, part-time</div>
+            <p>Part of a five-person security team. Application and API security, vulnerability management, and monitoring and incident support across Splunk and Microsoft Sentinel.</p>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="when">Feb 2025 – Sep 2025</div>
-        <div>
-          <h3>IT Support Field Agent</h3>
-          <div class="where">Contract · Bratislava</div>
-          <p>Deployed and configured laptops, applied OS and security updates, set up corporate connectivity, handled onboarding, and explained setups to non-technical staff across client sites.</p>
+        <div class="row">
+          <div class="when">Feb 2025 – Sep 2025</div>
+          <div>
+            <h3>IT Support Field Agent</h3>
+            <div class="where">Contract · Bratislava</div>
+            <p>Deployed and configured laptops, applied OS and security updates, set up corporate connectivity, handled onboarding, and explained setups to non-technical staff across client sites.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <section id="achievements" aria-label="Achievements">
-    <p class="eyebrow">// achievement</p>
-    <div class="highlight">
-      <span class="big">2nd</span>
-      <div>
-        <h3>Hack the Isles, national finals</h3>
-        <p>Second place at the finals hosted by CyberSpark in Belfast, February 2026, against teams from across the UK. Format covered CTF problem solving and threat-hunting scenarios.</p>
+    <div class="inner reveal">
+      <p class="eyebrow">// achievement</p>
+      <div class="highlight">
+        <span class="big">2nd</span>
+        <div>
+          <h3>Hack the Isles, national finals</h3>
+          <p>Second place at the finals hosted by CyberSpark in Belfast, February 2026, against teams from across the UK. Format covered CTF problem solving and threat-hunting scenarios.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <section id="skills" aria-label="Skills">
-    <p class="eyebrow">// skills</p>
-    <div class="skillset">
-      <div class="skillgroup">
-        <h3>Languages</h3>
-        <div class="chips"><span class="chip">Python</span><span class="chip">C#</span><span class="chip">C++</span><span class="chip">Bash</span></div>
-      </div>
-      <div class="skillgroup">
-        <h3>Security</h3>
-        <div class="chips"><span class="chip">Penetration testing</span><span class="chip">Reverse engineering</span><span class="chip">Vulnerability management</span><span class="chip">ICS / OT security</span><span class="chip">CTF</span></div>
-      </div>
-      <div class="skillgroup">
-        <h3>Tools &amp; platforms</h3>
-        <div class="chips"><span class="chip">Splunk</span><span class="chip">Microsoft Sentinel</span><span class="chip">WinPmem</span><span class="chip">Snap7 / Factory I/O</span><span class="chip">Unicorn</span><span class="chip">Git</span></div>
-      </div>
-      <div class="skillgroup">
-        <h3>Systems</h3>
-        <div class="chips"><span class="chip">Windows internals</span><span class="chip">Linux / WSL</span><span class="chip">Unity</span><span class="chip">Streamlit</span></div>
+    <div class="inner reveal">
+      <p class="eyebrow">// skills</p>
+      <div class="skillset">
+        <div class="skillgroup">
+          <h3>Languages</h3>
+          <div class="chips"><span class="chip">Python</span><span class="chip">C#</span><span class="chip">C++</span><span class="chip">Bash</span></div>
+        </div>
+        <div class="skillgroup">
+          <h3>Security</h3>
+          <div class="chips"><span class="chip">Penetration testing</span><span class="chip">Reverse engineering</span><span class="chip">Vulnerability management</span><span class="chip">ICS / OT security</span><span class="chip">CTF</span></div>
+        </div>
+        <div class="skillgroup">
+          <h3>Tools &amp; platforms</h3>
+          <div class="chips"><span class="chip">Splunk</span><span class="chip">Microsoft Sentinel</span><span class="chip">WinPmem</span><span class="chip">Snap7 / Factory I/O</span><span class="chip">Unicorn</span><span class="chip">Git</span></div>
+        </div>
+        <div class="skillgroup">
+          <h3>Systems</h3>
+          <div class="chips"><span class="chip">Windows internals</span><span class="chip">Linux / WSL</span><span class="chip">Unity</span><span class="chip">Streamlit</span></div>
+        </div>
       </div>
     </div>
   </section>
 
   <section id="education" aria-label="Education">
-    <p class="eyebrow">// education</p>
-    <div class="rows">
-      <div class="row">
-        <div class="when">2025 – 2026</div>
-        <div>
-          <h3>MSc Cyber Security</h3>
-          <div class="where">University of Birmingham</div>
-          <p>Offensive security, Windows internals, IoT and ICS security. Final project on Windows code integrity.</p>
+    <div class="inner reveal">
+      <p class="eyebrow">// education</p>
+      <div class="rows">
+        <div class="row">
+          <div class="when">2025 – 2026</div>
+          <div>
+            <h3>MSc Cyber Security</h3>
+            <div class="where">University of Birmingham</div>
+            <p>Offensive security, Windows internals, IoT and ICS security. Final project on Windows code integrity.</p>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="when">2022 – 2025</div>
-        <div>
-          <h3>BSc Computer Science</h3>
-          <div class="where">Technical University of Košice (TUKE)</div>
-          <p>Foundations in programming, systems and software engineering, with game and web development coursework.</p>
+        <div class="row">
+          <div class="when">2022 – 2025</div>
+          <div>
+            <h3>BSc Computer Science</h3>
+            <div class="where">Technical University of Košice (TUKE)</div>
+            <p>Foundations in programming, systems and software engineering, with game and web development coursework.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <section id="contact" aria-label="Contact">
-    <p class="eyebrow">// contact</p>
-    <h2>Let's talk</h2>
-    <p class="lead" style="margin:14px 0 22px">Open to offensive security and penetration testing roles in the UK, and happy to relocate. The quickest way to reach me is email.</p>
-    <div class="contact-box">
-      <div class="email-line">
-        <span class="path">$</span> <span class="email-val" id="email">muhammedrazvi92786@gmail.com</span>
-        <button class="copy" id="copyBtn" type="button">copy</button>
+    <div class="inner reveal">
+      <p class="eyebrow">// contact</p>
+      <h2>Let's talk</h2>
+      <p class="lead" style="margin-block:14px 22px">Open to offensive security and penetration testing roles in the UK, and happy to relocate. The quickest way to reach me is email.</p>
+      <div class="contact-box">
+        <div class="email-line">
+          <span class="path">$</span> <span class="email-val" id="email">muhammedrazvi92786@gmail.com</span>
+          <button class="copy" id="copyBtn" type="button">copy</button>
+        </div>
+        <a class="btn primary" href="https://github.com/Elishane786" target="_blank" rel="noopener">GitHub · Elishane786</a>
       </div>
-      <a class="btn primary" href="https://github.com/Elishane786" target="_blank" rel="noopener">GitHub · Elishane786</a>
     </div>
   </section>
 
   <footer>
-    <span>© 2026 Muhammed Ali Razvi</span>
-    <span>built from scratch · HTML / CSS / JS</span>
+    <div class="foot-inner">
+      <span>© 2026 Muhammed Ali Razvi</span>
+      <span>built from scratch · HTML / CSS / JS</span>
+    </div>
   </footer>
 
 </main>
@@ -340,6 +380,26 @@
       if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
     });
   });
+
+  // scroll reveal (no-JS and reduced-motion safe: content starts visible, JS arms the effect)
+  (function(){
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items=Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+    if(reduce||!('IntersectionObserver' in window)){
+      items.forEach(function(el){el.classList.add('in');});
+      return;
+    }
+    document.body.classList.add('anim');
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
+      });
+    },{rootMargin:'0px 0px -10% 0px',threshold:0.08});
+    items.forEach(function(el){io.observe(el);});
+    // safety net: reveal everything after 2s no matter what
+    setTimeout(function(){items.forEach(function(el){el.classList.add('in');});},2000);
+  })();
+
   // copy email, with fallback
   (function(){
     var btn=document.getElementById('copyBtn'), val=document.getElementById('email');
