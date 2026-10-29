@@ -42,17 +42,24 @@
   .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
   .bg::before{content:"";position:absolute;inset:-25%;
     background:
-      radial-gradient(520px circle at 22% 18%, rgba(69,209,127,.12), transparent 60%),
-      radial-gradient(560px circle at 82% 72%, rgba(69,209,127,.07), transparent 62%);
-    animation:drift 22s ease-in-out infinite alternate}
+      radial-gradient(340px circle at 24% 20%, rgba(69,209,127,.42), transparent 60%),
+      radial-gradient(620px circle at 24% 20%, rgba(69,209,127,.22), transparent 62%),
+      radial-gradient(640px circle at 80% 72%, rgba(69,209,127,.24), transparent 62%);
+    animation:drift 7s ease-in-out infinite alternate, pulse 3s ease-in-out infinite}
   .bg::after{content:"";position:absolute;inset:0;
     background-image:
       linear-gradient(rgba(233,231,225,.035) 1px, transparent 1px),
       linear-gradient(90deg, rgba(233,231,225,.035) 1px, transparent 1px);
     background-size:44px 44px;
     -webkit-mask:radial-gradient(circle at 50% 24%, #000, transparent 78%);
-    mask:radial-gradient(circle at 50% 24%, #000, transparent 78%)}
-  @keyframes drift{to{transform:translate3d(4%,3%,0) scale(1.12)}}
+    mask:radial-gradient(circle at 50% 24%, #000, transparent 78%);
+    animation:gridpan 10s linear infinite}
+  @keyframes drift{
+    0%{transform:translate3d(-9%,-6%,0) scale(1.05)}
+    100%{transform:translate3d(26%,18%,0) scale(1.34)}
+  }
+  @keyframes pulse{0%,100%{opacity:.42}50%{opacity:1}}
+  @keyframes gridpan{to{background-position:44px 44px}}
 
   header,main{position:relative;z-index:1}
   .inner{max-width:var(--maxw);margin-inline:auto}
@@ -109,6 +116,11 @@
   @media (max-width:640px){.grid{grid-template-columns:1fr}}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0;transition:border-color .18s,transform .18s}
   .card:hover{border-color:var(--accent);transform:translateY(-3px)}
+  .grid .card:nth-child(2){transition-delay:.06s}
+  .grid .card:nth-child(3){transition-delay:.12s}
+  .grid .card:nth-child(4){transition-delay:.18s}
+  .grid .card:nth-child(5){transition-delay:.24s}
+  .grid .card:nth-child(6){transition-delay:.30s}
   .card h3{font-size:1.1rem;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .flag{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
   .card p{margin:0;color:var(--muted);font-size:.92rem}
@@ -153,11 +165,12 @@
 
   /* scroll reveal: only armed once body.anim is set by JS, so no-JS shows everything */
   .reveal{transition:opacity .6s ease, transform .6s ease}
-  body.anim .reveal:not(.in){opacity:0;transform:translateY(22px)}
+  body.anim .reveal:not(.in){opacity:0;transform:translateY(32px)}
   @media (prefers-reduced-motion:reduce){
     .fade-in{animation:none}
     .cursor{animation:none}
     .bg::before{animation:none}
+    .bg::after{animation:none}
     body.anim .reveal:not(.in){opacity:1;transform:none}
   }
 </style>
@@ -213,46 +226,46 @@
   </section>
 
   <section id="work" aria-label="Projects">
-    <div class="inner reveal">
+    <div class="inner">
       <p class="eyebrow">// selected work</p>
       <div class="grid">
 
-        <article class="card">
+        <article class="card reveal">
           <h3>SecurePass Analyzer</h3>
           <p>A password auditing tool that scores real strength with zxcvbn and checks a password against the Have I Been Pwned breach set using k-anonymity, so the password never leaves the machine. Also generates strong passwords and passphrases.</p>
           <div class="tags"><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">HIBP API</span></div>
           <a class="card-link" href="https://github.com/Elishane786/securepass-analyzer" target="_blank" rel="noopener">View on GitHub →</a>
         </article>
 
-        <article class="card">
+        <article class="card reveal">
           <h3>2D Dungeon Adventure</h3>
           <p>A pixel-art dungeon platformer built in Unity with C#. My own gameplay systems: arrow firing and spawning, doors and keys, chests, traps, a dialogue and story flow, and hand-built levels from a start menu through to the end.</p>
           <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Game dev</span></div>
           <a class="card-link" href="https://github.com/Elishane786/2d-dungeon-adventure" target="_blank" rel="noopener">View on GitHub →</a>
         </article>
 
-        <article class="card">
+        <article class="card reveal">
           <h3>Testing Windows Code Integrity <span class="flag">MSc final project</span></h3>
           <p>Research into whether a Microsoft signature really proves a driver is safe. Using WinPmem to reach raw physical memory, I built a Counter-Strike 2 ESP wallhack from scratch, reading player positions straight out of physical memory instead of the usual virtual-memory route, to show how memory protections can be sidestepped. Defended in viva.</p>
           <div class="tags"><span class="tag">Windows internals</span><span class="tag">Physical memory</span><span class="tag">WinPmem</span><span class="tag">C++</span></div>
           <span class="card-link none">Academic report</span>
         </article>
 
-        <article class="card">
+        <article class="card reveal">
           <h3>EZVIZ C6N Camera Pentest <span class="flag">group project</span></h3>
           <p>Security assessment of a consumer IoT camera for an MSc group project, looking at the device, its app, and its network traffic. I helped run the testing and wrote up the findings into a formal penetration test report.</p>
           <div class="tags"><span class="tag">IoT security</span><span class="tag">Pentesting</span><span class="tag">Reporting</span></div>
           <span class="card-link none">Assessment report</span>
         </article>
 
-        <article class="card">
+        <article class="card reveal">
           <h3>ICS &amp; Digital-Twin Security <span class="flag">research</span></h3>
           <p>My main research direction: security of industrial control systems. Manipulating PLCs over Snap7, modelling a plant with Factory I/O, and looking at how a digital twin can be attacked or used to defend the real process.</p>
           <div class="tags"><span class="tag">ICS / OT</span><span class="tag">PLC / Snap7</span><span class="tag">Factory I/O</span></div>
           <span class="card-link none">Research</span>
         </article>
 
-        <article class="card">
+        <article class="card reveal">
           <h3>CTF &amp; Exploitation</h3>
           <p>Ongoing capture-the-flag work across binary exploitation, reverse engineering and cryptography challenges, including memory-dump and pwn problems. Where competition results came from this, they are listed below.</p>
           <div class="tags"><span class="tag">Reverse engineering</span><span class="tag">pwn</span><span class="tag">Crypto</span></div>
@@ -390,14 +403,16 @@
       return;
     }
     document.body.classList.add('anim');
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
-      });
-    },{rootMargin:'0px 0px -10% 0px',threshold:0.08});
-    items.forEach(function(el){io.observe(el);});
-    // safety net: reveal everything after 2s no matter what
-    setTimeout(function(){items.forEach(function(el){el.classList.add('in');});},2000);
+    function update(){
+      var h=window.innerHeight||document.documentElement.clientHeight;
+      for(var i=0;i<items.length;i++){
+        var r=items[i].getBoundingClientRect();
+        items[i].classList.toggle('in', r.top < h*0.88 && r.bottom > h*0.12);
+      }
+    }
+    update();
+    window.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('resize',update);
   })();
 
   // copy email, with fallback
