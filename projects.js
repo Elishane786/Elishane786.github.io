@@ -45,11 +45,12 @@ window.SITE_PROJECTS = [
   {
     title: "Testing Windows Code Integrity",
     flag: "MSc final project",
-    description: "Research into whether a Microsoft signature really proves a driver is safe. Using WinPmem to reach raw physical memory, I built a Counter-Strike 2 ESP wallhack from scratch, reading player positions straight out of physical memory instead of the usual virtual-memory route, to show how memory protections can be sidestepped. Defended in viva.",
+    description: "Does a Microsoft signature prove a driver is safe? I tested it on a Windows 10 machine, using an administrator account and signed software only. The signed forensic driver WinPmem handed over all of physical memory, including the contents of processes that had already closed, but every attempt to write crashed the machine before the target value changed, and what stopped it was a kernel safety check and not the signature. VBS and HVCI were not tested. Defended in viva.",
     tags: ["Windows internals", "Physical memory", "WinPmem", "C++"],
-    links: [],
-    note: "Academic report"
-    // when the report is ready: links: [{ label: "Read the report (PDF)", url: "reports/windows-code-integrity.pdf" }],
+    links: [
+      { label: "Read the report (PDF)", url: "https://github.com/Elishane786/testing-windows-code-integrity/blob/main/report/final-report.pdf" },
+      { label: "View on GitHub →", url: "https://github.com/Elishane786/testing-windows-code-integrity" }
+    ]
   },
 
   {
