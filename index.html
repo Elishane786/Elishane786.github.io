@@ -128,6 +128,8 @@
   .tag{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
   .card-link{font-family:var(--font-mono);font-size:.8rem;margin-top:4px}
   .card-link.none{color:var(--muted)}
+  .card-links{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:4px}
+  .card-links .card-link{margin-top:0}
 
   .rows{display:flex;flex-direction:column;gap:2px}
   .row{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--border)}
@@ -231,50 +233,8 @@
   <section id="work" aria-label="Projects">
     <div class="inner">
       <p class="eyebrow">// selected work</p>
-      <div class="grid">
-
-        <article class="card reveal">
-          <h3>SecurePass Analyzer</h3>
-          <p>A password auditing tool that scores real strength with zxcvbn and checks a password against the Have I Been Pwned breach set using k-anonymity, so the password never leaves the machine. Also generates strong passwords and passphrases.</p>
-          <div class="tags"><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">HIBP API</span></div>
-          <a class="card-link" href="https://github.com/Elishane786/securepass-analyzer" target="_blank" rel="noopener">View on GitHub →</a>
-        </article>
-
-        <article class="card reveal">
-          <h3>2D Dungeon Adventure</h3>
-          <p>A pixel-art dungeon platformer built in Unity with C#. My own gameplay systems: arrow firing and spawning, doors and keys, chests, traps, a dialogue and story flow, and hand-built levels from a start menu through to the end.</p>
-          <div class="tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Game dev</span></div>
-          <a class="card-link" href="https://github.com/Elishane786/2d-dungeon-adventure" target="_blank" rel="noopener">View on GitHub →</a>
-        </article>
-
-        <article class="card reveal">
-          <h3>Testing Windows Code Integrity <span class="flag">MSc final project</span></h3>
-          <p>Research into whether a Microsoft signature really proves a driver is safe. Using WinPmem to reach raw physical memory, I built a Counter-Strike 2 ESP wallhack from scratch, reading player positions straight out of physical memory instead of the usual virtual-memory route, to show how memory protections can be sidestepped. Defended in viva.</p>
-          <div class="tags"><span class="tag">Windows internals</span><span class="tag">Physical memory</span><span class="tag">WinPmem</span><span class="tag">C++</span></div>
-          <span class="card-link none">Academic report</span>
-        </article>
-
-        <article class="card reveal">
-          <h3>EZVIZ C6N Camera Pentest <span class="flag">group project</span></h3>
-          <p>Security assessment of a consumer IoT camera for an MSc group project, looking at the device, its app, and its network traffic. I helped run the testing and wrote up the findings into a formal penetration test report.</p>
-          <div class="tags"><span class="tag">IoT security</span><span class="tag">Pentesting</span><span class="tag">Reporting</span></div>
-          <span class="card-link none">Assessment report</span>
-        </article>
-
-        <article class="card reveal">
-          <h3>ICS &amp; Digital-Twin Security <span class="flag">research</span></h3>
-          <p>My main research direction: security of industrial control systems. Manipulating PLCs over Snap7, modelling a plant with Factory I/O, and looking at how a digital twin can be attacked or used to defend the real process.</p>
-          <div class="tags"><span class="tag">ICS / OT</span><span class="tag">PLC / Snap7</span><span class="tag">Factory I/O</span></div>
-          <span class="card-link none">Research</span>
-        </article>
-
-        <article class="card reveal">
-          <h3>CTF &amp; Exploitation</h3>
-          <p>Ongoing capture-the-flag work across binary exploitation, reverse engineering and cryptography challenges, including memory-dump and pwn problems. Where competition results came from this, they are listed below.</p>
-          <div class="tags"><span class="tag">Reverse engineering</span><span class="tag">pwn</span><span class="tag">Crypto</span></div>
-          <span class="card-link none">Practice</span>
-        </article>
-
+      <div class="grid" id="projectGrid">
+        <noscript><p class="lead">This list needs JavaScript. All my code is on <a href="https://github.com/Elishane786" target="_blank" rel="noopener">GitHub</a>.</p></noscript>
       </div>
     </div>
   </section>
@@ -394,6 +354,51 @@
 
 </main>
 
+<script src="projects.js"></script>
+<script>
+  // draw the project cards from projects.js (edit that file, not this one)
+  (function(){
+    var grid=document.getElementById('projectGrid');
+    var list=window.SITE_PROJECTS;
+    if(!grid||!Array.isArray(list)||!list.length) return;
+    function el(tag,cls,text){
+      var n=document.createElement(tag);
+      if(cls) n.className=cls;
+      if(text!==undefined) n.textContent=text;
+      return n;
+    }
+    function safeUrl(u){
+      u=String(u||'').trim();
+      return /^(https?:\/\/|mailto:|[A-Za-z0-9_\-.\/]+$)/.test(u) ? u : '';
+    }
+    grid.textContent='';
+    list.forEach(function(p){
+      var card=el('article','card reveal');
+      var h=el('h3',null,p.title||'');
+      if(p.flag){h.appendChild(document.createTextNode(' '));h.appendChild(el('span','flag',p.flag));}
+      card.appendChild(h);
+      card.appendChild(el('p',null,p.description||''));
+      if(p.tags&&p.tags.length){
+        var tags=el('div','tags');
+        p.tags.forEach(function(t){tags.appendChild(el('span','tag',t));});
+        card.appendChild(tags);
+      }
+      var links=(p.links||[]).filter(function(l){return l&&safeUrl(l.url);});
+      if(links.length){
+        var box=el('div','card-links');
+        links.forEach(function(l){
+          var a=el('a','card-link',l.label||'Open');
+          a.href=safeUrl(l.url);a.target='_blank';a.rel='noopener';
+          box.appendChild(a);
+        });
+        card.appendChild(box);
+      }else if(p.note){
+        card.appendChild(el('span','card-link none',p.note));
+      }
+      grid.appendChild(card);
+    });
+  })();
+</script>
 <script>
   // smooth scroll for in-page links
   document.querySelectorAll('a[href^="#"]').forEach(function(a){
