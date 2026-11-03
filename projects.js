@@ -54,6 +54,14 @@ window.SITE_PROJECTS = [
   },
 
   {
+    title: "ChatGPT Ethical Hacking",
+    flag: "Bachelor thesis",
+    description: "Built a suite of AI-assisted tools that automate penetration testing end to end: you give it a target IP, it runs an Nmap scan, sends the results to ChatGPT, which suggests a Metasploit exploit to run, then runs it and has ChatGPT write up the report. Also built phishing simulation tools, fake login pages and email generators, for cybersecurity awareness training. Tested in an isolated lab against Metasploitable2.",
+    tags: ["Python", "OpenAI API", "Metasploit", "Nmap", "Social engineering"],
+    links: [{ label: "View on GitHub →", url: "https://github.com/Elishane786/chatgpt-ethical-hacking" }]
+  },
+
+  {
     title: "EZVIZ C6N Camera Pentest",
     flag: "group project",
     description: "Security assessment of a consumer IoT camera for an MSc group project, looking at the device, its app, and its network traffic. I helped run the testing and wrote up the findings into a formal penetration test report.",
