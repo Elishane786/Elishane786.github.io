@@ -797,7 +797,8 @@
       el.textContent = seg.t;
       d.appendChild(el);
     });
-    if (!d.firstChild) d.appendChild(document.createTextNode(' '));
+    // an empty line must still take up a row, or blank lines (the gaps between poem verses) collapse
+    if (!d.textContent) d.appendChild(document.createTextNode('\u00a0'));
     log.appendChild(d);
     while (log.childNodes.length > 600) log.removeChild(log.firstChild);
   }
