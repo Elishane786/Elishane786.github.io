@@ -293,6 +293,43 @@
     return dir(kids);
   }
 
+  // The poems folder is read live from the poems folder of the GitHub repo, so adding a .txt file
+  // there is all it takes for a new poem to show up in the terminal.
+  var POEMS = { repo: 'Elishane786/Elishane786.github.io', dir: 'poems', status: 'idle' };
+  var poemsNode = dir({}, { poems: true });
+
+  function addPoem(name) {
+    var text = null;
+    poemsNode.c[name] = file(function () {
+      return text === null ? ['(opening the page, try again in a second)'] : text.split('\n');
+    });
+    fetch(POEMS.dir + '/' + name)
+      .then(function (r) { if (!r.ok) throw new Error('open failed'); return r.text(); })
+      .then(function (t) { text = t.replace(/\r/g, '').replace(/\n+$/, '').slice(0, 20000); })
+      .catch(function () { text = '(could not open this one right now)'; });
+  }
+
+  function loadPoems() {
+    if (POEMS.status !== 'idle') return;
+    if (!window.fetch) { POEMS.status = 'failed'; return; }
+    POEMS.status = 'loading';
+    fetch('https://api.github.com/repos/' + POEMS.repo + '/contents/' + POEMS.dir)
+      .then(function (r) { if (!r.ok) throw new Error('listing failed'); return r.json(); })
+      .then(function (items) {
+        (Array.isArray(items) ? items : []).filter(function (it) {
+          return it && it.type === 'file' && /^[A-Za-z0-9_.\-]+\.txt$/.test(it.name);
+        }).slice(0, 60).forEach(function (it) { addPoem(it.name); });
+        POEMS.status = 'ok';
+      })
+      .catch(function () { POEMS.status = 'failed'; });
+  }
+
+  function poemsNote() {
+    if (POEMS.status === 'ok') return 'nothing here yet';
+    if (POEMS.status === 'failed') return 'could not reach the poems right now, try again later';
+    return 'still loading, try again in a second';
+  }
+
   var HOME = ['home', 'visitor'];
 
   var ROOT = dir({
@@ -307,7 +344,10 @@
         projects: buildProjectsDir(),
         '.bash_history': file(HISTORY_FILE, { m: '-rw-------' })
       }),
-      ali: dir({}, { denied: true, m: 'drwx------', o: 'ali' })
+      ali: dir({}, { denied: true, m: 'drwx------', o: 'ali' }),
+      personal: dir({
+        poems: poemsNode
+      })
     }),
     var: dir({
       backups: dir({
@@ -535,6 +575,8 @@
             { t: e.name + (isDir ? '/' : ''), c: isDir ? 't-dir' : undefined }
           ]);
         });
+      } else if (!entries.length && node.poems) {
+        out.push({ t: poemsNote(), c: 't-dim' });
       } else if (entries.length) {
         var line = [];
         entries.forEach(function (e, i) {
@@ -633,8 +675,10 @@
       return [
         [{ t: '[+] flag accepted', c: 't-ok t-strong' }],
         '',
-        [{ t: 'You read the dotfiles, followed the trail and decoded the vault, which is exactly how I look at a target.', c: 't-fade t-d2' }],
-        [{ t: 'Tell me how you did it, find me on Discord: ', c: 't-fade t-d3' }, { t: DISCORD_HANDLE, c: 't-accent t-strong t-fade t-d3' }]
+        [{ t: 'Most people stop where the surface ends, and that is exactly where everything worth finding begins.', c: 't-fade t-d2' }],
+        [{ t: 'The surface is there for everyone, and what lies beneath belongs to the ones who dig.', c: 't-fade t-d3' }],
+        '',
+        [{ t: 'Tell me how you did it, find me on Discord: ', c: 't-fade t-d4' }, { t: DISCORD_HANDLE, c: 't-accent t-strong t-fade t-d4' }]
       ];
     }
     return [[{ t: '[-] not it, keep digging', c: 't-err' }]];
@@ -771,6 +815,7 @@
   }
 
   function exec(line) {
+    loadPoems();
     echoLine(line);
     var t = line.trim();
     if (!t) return;
@@ -891,6 +936,18 @@
   termBody.appendChild(row);
 
   addLine([{ t: "type 'help' to see what you can run. Tab completes, the up arrow brings back old commands.", c: 't-dim' }]);
+
+  // a playful nudge above the terminal, so visitors know there is a flag to find
+  var termBox = termBody.closest('.term');
+  if (termBox && termBox.parentNode) {
+    var hint = document.createElement('p');
+    hint.className = 't-hint';
+    var slashes = document.createElement('span');
+    slashes.textContent = '// ';
+    hint.appendChild(slashes);
+    hint.appendChild(document.createTextNode('it is a terminal, like an actual one, so use it like one'));
+    termBox.parentNode.insertBefore(hint, termBox);
+  }
 
   // clickable shortcuts under the terminal, for visitors who would rather tap than type
   var term = termBody.closest('.term');
