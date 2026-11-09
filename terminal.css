@@ -1,0 +1,63 @@
+/*
+  terminal.css styles the interactive terminal in the hero.
+  It only adds to the look in index.html and reuses its colour variables.
+*/
+
+.term{position:relative;transition:border-color .15s,box-shadow .4s}
+.term:focus-within{border-color:var(--accent)}
+
+/* once output grows, the terminal scrolls inside itself instead of pushing the page down */
+.term-body{max-height:min(72vh,560px);overflow-y:auto;overscroll-behavior:contain}
+
+.t-log .line{margin:0}
+.t-row{display:flex;align-items:baseline;gap:.6ch}
+.t-prompt{flex:none;white-space:pre}
+.t-input{
+  flex:1;min-width:6ch;
+  background:transparent;border:0;outline:0;margin:0;padding:0;
+  color:var(--fg);font:inherit;caret-color:var(--accent);
+}
+.t-input::placeholder{color:var(--muted);opacity:.55}
+/* phones zoom into inputs smaller than 16px, so keep this one at 16px on touch screens */
+@media (pointer:coarse){.t-input{font-size:16px}}
+
+.t-dim{color:var(--muted)}
+.t-strong{font-weight:600}
+.t-accent,.t-ok,.t-dir{color:var(--accent)}
+.t-err{color:#ff8a80}
+
+.t-chips{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;
+  font-family:var(--font-mono);font-size:.78rem;color:var(--muted);
+}
+.t-chip{
+  font:inherit;color:var(--fg);background:var(--surface);
+  border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;
+  transition:border-color .15s,transform .15s;
+}
+.t-chip:hover{border-color:var(--accent);transform:translateY(-1px)}
+
+/* flag accepted: glowing banner, lines that fade in one after another, and the cursor storm */
+.t-win{color:var(--accent);font-weight:600;letter-spacing:.04em;text-shadow:0 0 14px rgba(69,209,127,.75)}
+.t-fade{animation:t-fade .7s ease both}
+.t-d1{animation-delay:.25s}
+.t-d2{animation-delay:.9s}
+.t-d3{animation-delay:1.5s}
+@keyframes t-fade{from{opacity:0}to{opacity:1}}
+
+.term.t-won{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 38px rgba(69,209,127,.35)}
+.t-storm{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+.t-storm-cur{
+  position:absolute;width:9px;height:1.05em;background:var(--accent);
+  box-shadow:0 0 8px var(--accent);opacity:0;
+  animation:t-storm 2.4s ease-in forwards;
+}
+@keyframes t-storm{
+  0%{opacity:0;transform:translate(0,-24px) scale(var(--s))}
+  15%{opacity:1}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(var(--s))}
+}
+@media (prefers-reduced-motion:reduce){
+  .t-fade{animation:none}
+  .t-storm{display:none}
+}
